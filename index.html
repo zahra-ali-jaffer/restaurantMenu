@@ -1,113 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Roasted Chicken Delivery</title>
   <style>
     body {
-      background: linear-gradient(to bottom, #4169e1, #add8e6);
-      font-family: Arial, sans-serif;
-      text-align: left;
+      background: linear-gradient(to bottom, #e0f7ff, #add8e6);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
       padding: 20px;
+      color: #333;
     }
 
     h1 {
-      color: navy;
-      font-size: 24px;
+      color: #003366;
+      font-size: 32px;
       text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .discount-banner {
+      background-color: #d1ecf1;
+      border: 2px dashed #0c5460;
+      color: #0c5460;
+      text-align: center;
+      padding: 15px;
+      font-size: 18px;
+      margin: 20px auto;
+      width: 80%;
+      border-radius: 10px;
     }
 
     .slider {
       width: 80%;
-      margin: 0 auto;
+      margin: 20px auto;
     }
 
     .slider img {
       width: 100%;
       max-height: 400px;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .media-row {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       gap: 40px;
       margin: 30px 0;
     }
 
-    .media-row img {
-      width: 399px;
-      height: 344px;
-    }
-
-    .media-row video {
-      width: 400px;
-      height: auto;
+    .media-row img, .media-row video {
+      max-width: 100%;
+      border-radius: 10px;
     }
 
     form {
-      margin-top: 20px;
-      font-size: 18px;
+      width: 80%;
+      margin: 0 auto;
+      background-color: #ffffffcc;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 16px;
     }
 
-    select, input[type="text"] {
+    form label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    select, input[type="text"], input[type="number"], input[type="submit"] {
+      margin-top: 5px;
+      padding: 8px;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+      font-size: 16px;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    input[type="submit"] {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    .made-by {
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+      background-color: #ffa500;
+      color: black;
+      padding: 6px 12px;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+
+    #finalPrice {
+      font-weight: bold;
       margin-top: 10px;
-      padding: 5px;
+      color: #0c5460;
     }
-
-    .footer {
-      margin-top: 20px;
-    }
-
-   .made-by {
-  position: fixed;
-  right: 10px; /* moved from left */
-  bottom: 10px;
-  background-color: orange;
-  color: black;
-  padding: 5px 10px;
-  font-weight: bold;
-  border-radius: 5px;
-}
-
   </style>
 </head>
 <body>
 
   <h1>Get The Delicious Roasted Chicken Right At Your Door</h1>
 
+  <div class="discount-banner">
+    🎉 15% Discount For Purchases Above £100 For Customers!
+  </div>
+
   <div class="slider">
     <img id="sliderImage" src="chickenPlate.jpg" alt="Delicious Chicken">
   </div>
 
   <div class="media-row">
-    <img src="Money_Quest.jpg" alt="Money Quest Meme">
-    <video controls>
+    <img src="Money_Quest.jpg" alt="Money Quest Meme" width="400" height="344">
+    <video controls width="400">
       <source src="mickeyMouse.mp4" type="video/mp4">
     </video>
   </div>
 
   <form>
-    <label>Enter your Name:</label><br>
-    <input type="text" name="name"><br><br>
+    <label>Enter your Name:</label>
+    <input type="text" name="name" required>
 
-    <label>Choose the taste:</label><br>
-    <input type="checkbox" name="taste" value="Halal"> Halal<br>
-    <input type="checkbox" name="taste" value="Spicy"> Spicy<br>
-    <input type="checkbox" name="taste" value="With Salad"> With Salad<br><br>
+    <label>Choose the taste:</label>
+    <input type="checkbox" name="taste" value="Halal">Halal<br>
+    <input type="checkbox" name="taste" value="Spicy">Spicy<br>
+    <input type="checkbox" name="taste" value="With Salad">With Salad<br>
 
-    <label>Choose the size:</label><br>
-    <input type="radio" name="size" value="Whole"> Whole<br>
-    <input type="radio" name="size" value="Half"> Half<br>
-    <input type="radio" name="size" value="Quarter"> Quarter<br><br>
+    <label>Choose the size:</label>
+    <input type="radio" name="size" value="Whole">Whole<br>
+    <input type="radio" name="size" value="Half">Half<br>
+    <input type="radio" name="size" value="Quarter">Quarter<br>
 
-    <label>Choose the mode of delivery:</label><br>
+    <label>Choose the mode of delivery:</label>
     <select>
       <option>Same day (after 3 hours of the order)</option>
       <option>Next day delivery</option>
       <option>Schedule later</option>
-    </select><br><br>
+    </select>
+
+    <label>Enter your total amount (£):</label>
+    <input type="number" id="totalAmount" placeholder="e.g. 120" min="0">
+
+    <p id="finalPrice"></p>
 
     <input type="submit" value="Submit">
   </form>
@@ -115,11 +169,7 @@
   <div class="made-by">Made by Zahra</div>
 
   <script>
-    const images = [
-      "chickenPlate.jpg",
-      "chickenRoast.jpg"
-    ];
-
+    const images = ["chickenPlate.jpg", "chickenRoast.jpg"];
     let index = 0;
     const sliderImage = document.getElementById("sliderImage");
 
@@ -127,6 +177,26 @@
       index = (index + 1) % images.length;
       sliderImage.src = images[index];
     }, 3000);
+
+    // Live discount calculation
+    const totalInput = document.getElementById('totalAmount');
+    const finalPriceEl = document.getElementById('finalPrice');
+
+    totalInput.addEventListener('input', () => {
+      const total = parseFloat(totalInput.value);
+
+      if (isNaN(total) || total <= 0) {
+        finalPriceEl.textContent = "";
+        return;
+      }
+
+      if (total > 100) {
+        const discounted = total * 0.85;
+        finalPriceEl.textContent = `🎉 You get a 15% discount! Final price: £${discounted.toFixed(2)}`;
+      } else {
+        finalPriceEl.textContent = `Total is less than £100. No discount applied. Final price: £${total.toFixed(2)}`;
+      }
+    });
   </script>
 
 </body>
