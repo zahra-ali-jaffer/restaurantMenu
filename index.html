@@ -186,7 +186,7 @@
 
     options.forEach(option => {
       option.addEventListener('change', () => {
-        if (document.querySelector('input[name="taste"]:checked') || document.querySelector('input[name="size"]:checked') || document.querySelector('select[name="delivery"] option:selected')) {
+        if (document.querySelector('input[name="taste"]:checked') || document.querySelector('input[name="size"]:checked') || document.querySelector('select option:checked')) {
           totalInput.disabled = false;
         } else {
           totalInput.disabled = true;
