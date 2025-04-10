@@ -116,6 +116,24 @@
       margin-top: 10px;
       color: #0c5460;
     }
+
+    .order-summary {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .order-summary h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .order-summary p {
+      font-size: 16px;
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
@@ -169,6 +187,16 @@
 
   <div class="made-by">Made by Zahra</div>
 
+  <!-- Order Summary Section -->
+  <div class="order-summary" id="orderSummary" style="display:none;">
+    <h3>Order Summary</h3>
+    <p><strong>Name:</strong> <span id="summaryName"></span></p>
+    <p><strong>Taste Preferences:</strong> <span id="summaryTaste"></span></p>
+    <p><strong>Size:</strong> <span id="summarySize"></span></p>
+    <p><strong>Delivery Method:</strong> <span id="summaryDelivery"></span></p>
+    <p><strong>Total Price:</strong> £<span id="summaryPrice"></span></p>
+  </div>
+
   <script>
     const images = ["chickenPlate.jpg", "chickenRoast.jpg"];
     let index = 0;
@@ -183,6 +211,12 @@
     const options = document.querySelectorAll('.option');
     const totalInput = document.getElementById('totalAmount');
     const finalPriceEl = document.getElementById('finalPrice');
+    const orderSummaryEl = document.getElementById('orderSummary');
+    const summaryName = document.getElementById('summaryName');
+    const summaryTaste = document.getElementById('summaryTaste');
+    const summarySize = document.getElementById('summarySize');
+    const summaryDelivery = document.getElementById('summaryDelivery');
+    const summaryPrice = document.getElementById('summaryPrice');
 
     options.forEach(option => {
       option.addEventListener('change', () => {
@@ -210,6 +244,26 @@
       } else {
         finalPriceEl.textContent = `Total is less than £100. No discount applied. Final price: £${total.toFixed(2)}`;
       }
+    });
+
+    // Display the order summary
+    document.querySelector('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.querySelector('input[name="name"]').value;
+      const tastes = [...document.querySelectorAll('input[name="taste"]:checked')].map(input => input.value).join(', ');
+      const size = document.querySelector('input[name="size"]:checked') ? document.querySelector('input[name="size"]:checked').value : 'Not selected';
+      const delivery = document.querySelector('select').value;
+      const total = parseFloat(totalInput.value);
+      const finalPrice = total > 100 ? (total * 0.85).toFixed(2) : total.toFixed(2);
+
+      summaryName.textContent = name;
+      summaryTaste.textContent = tastes || 'Not selected';
+      summarySize.textContent = size;
+      summaryDelivery.textContent = delivery;
+      summaryPrice.textContent = finalPrice;
+
+      orderSummaryEl.style.display = 'block';  // Show the order summary
     });
   </script>
 
