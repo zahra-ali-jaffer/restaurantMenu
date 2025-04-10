@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Roasted Chicken Delivery</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #4169e1, #add8e6);
+      font-family: Arial, sans-serif;
+      text-align: left;
+      padding: 20px;
+    }
+
+    h1 {
+      color: navy;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .slider {
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    .slider img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .media-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin: 30px 0;
+    }
+
+    .media-row img {
+      width: 399px;
+      height: 344px;
+    }
+
+    .media-row video {
+      width: 400px;
+      height: auto;
+    }
+
+    form {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    select, input[type="text"] {
+      margin-top: 10px;
+      padding: 5px;
+    }
+
+    .footer {
+      margin-top: 20px;
+    }
+
+   .made-by {
+  position: fixed;
+  right: 10px; /* moved from left */
+  bottom: 10px;
+  background-color: orange;
+  color: black;
+  padding: 5px 10px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+  </style>
+</head>
+<body>
+
+  <h1>Get The Delicious Roasted Chicken Right At Your Door</h1>
+
+  <div class="slider">
+    <img id="sliderImage" src="chickenPlate.jpg" alt="Delicious Chicken">
+  </div>
+
+  <div class="media-row">
+    <img src="Money_Quest.jpg" alt="Money Quest Meme">
+    <video controls>
+      <source src="mickeyMouse.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <form>
+    <label>Enter your Name:</label><br>
+    <input type="text" name="name"><br><br>
+
+    <label>Choose the taste:</label><br>
+    <input type="checkbox" name="taste" value="Halal"> Halal<br>
+    <input type="checkbox" name="taste" value="Spicy"> Spicy<br>
+    <input type="checkbox" name="taste" value="With Salad"> With Salad<br><br>
+
+    <label>Choose the size:</label><br>
+    <input type="radio" name="size" value="Whole"> Whole<br>
+    <input type="radio" name="size" value="Half"> Half<br>
+    <input type="radio" name="size" value="Quarter"> Quarter<br><br>
+
+    <label>Choose the mode of delivery:</label><br>
+    <select>
+      <option>Same day (after 3 hours of the order)</option>
+      <option>Next day delivery</option>
+      <option>Schedule later</option>
+    </select><br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <div class="made-by">Made by Zahra</div>
+
+  <script>
+    const images = [
+      "chickenPlate.jpg",
+      "chickenRoast.jpg"
+    ];
+
+    let index = 0;
+    const sliderImage = document.getElementById("sliderImage");
+
+    setInterval(() => {
+      index = (index + 1) % images.length;
+      sliderImage.src = images[index];
+    }, 3000);
+  </script>
+
+</body>
+</html>
