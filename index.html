@@ -142,24 +142,25 @@
     <input type="text" name="name" required>
 
     <label>Choose the taste:</label>
-    <input type="checkbox" name="taste" value="Halal">Halal<br>
-    <input type="checkbox" name="taste" value="Spicy">Spicy<br>
-    <input type="checkbox" name="taste" value="With Salad">With Salad<br>
+    <input type="checkbox" name="taste" value="Halal" class="option">Halal<br>
+    <input type="checkbox" name="taste" value="Spicy" class="option">Spicy<br>
+    <input type="checkbox" name="taste" value="With Salad" class="option">With Salad<br>
 
     <label>Choose the size:</label>
-    <input type="radio" name="size" value="Whole">Whole<br>
-    <input type="radio" name="size" value="Half">Half<br>
-    <input type="radio" name="size" value="Quarter">Quarter<br>
+    <input type="radio" name="size" value="Whole" class="option">Whole<br>
+    <input type="radio" name="size" value="Half" class="option">Half<br>
+    <input type="radio" name="size" value="Quarter" class="option">Quarter<br>
 
     <label>Choose the mode of delivery:</label>
-    <select>
+    <select class="option">
+      <option value="">Select Delivery Method</option>
       <option>Same day (after 3 hours of the order)</option>
       <option>Next day delivery</option>
       <option>Schedule later</option>
     </select>
 
     <label>Enter your total amount (£):</label>
-    <input type="number" id="totalAmount" placeholder="e.g. 120" min="0">
+    <input type="number" id="totalAmount" placeholder="e.g. 120" min="0" disabled>
 
     <p id="finalPrice"></p>
 
@@ -178,10 +179,23 @@
       sliderImage.src = images[index];
     }, 3000);
 
-    // Live discount calculation
+    // Enable total amount input when options are selected
+    const options = document.querySelectorAll('.option');
     const totalInput = document.getElementById('totalAmount');
     const finalPriceEl = document.getElementById('finalPrice');
 
+    options.forEach(option => {
+      option.addEventListener('change', () => {
+        if (document.querySelector('input[name="taste"]:checked') || document.querySelector('input[name="size"]:checked') || document.querySelector('select[name="delivery"] option:selected')) {
+          totalInput.disabled = false;
+        } else {
+          totalInput.disabled = true;
+          finalPriceEl.textContent = '';
+        }
+      });
+    });
+
+    // Live discount calculation
     totalInput.addEventListener('input', () => {
       const total = parseFloat(totalInput.value);
 
