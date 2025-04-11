@@ -74,7 +74,7 @@
       margin-top: 15px;
     }
 
-    select, input[type="text"], input[type="number"], input[type="submit"] {
+    select, input[type="text"], input[type="submit"] {
       margin-top: 5px;
       padding: 8px;
       width: 100%;
@@ -141,7 +141,7 @@
   <h1>Get The Delicious Roasted Chicken Right At Your Door</h1>
 
   <div class="discount-banner">
-    🎉 15% Discount For Purchases Above £100 For Customers!
+    🎉 15% Discount For Orders Over £50!
   </div>
 
   <div class="slider">
@@ -155,30 +155,27 @@
     </video>
   </div>
 
-  <form>
+  <form id="orderForm">
     <label>Enter your Name:</label>
     <input type="text" name="name" required>
 
     <label>Choose the taste:</label>
-    <input type="checkbox" name="taste" value="Halal" class="option">Halal<br>
-    <input type="checkbox" name="taste" value="Spicy" class="option">Spicy<br>
-    <input type="checkbox" name="taste" value="With Salad" class="option">With Salad<br>
+    <input type="checkbox" name="taste" value="Halal" class="option">Halal (Free)<br>
+    <input type="checkbox" name="taste" value="Spicy" class="option">Spicy (+£1.5)<br>
+    <input type="checkbox" name="taste" value="With Salad" class="option">With Salad (+£1)<br>
 
     <label>Choose the size:</label>
-    <input type="radio" name="size" value="Whole" class="option">Whole<br>
-    <input type="radio" name="size" value="Half" class="option">Half<br>
-    <input type="radio" name="size" value="Quarter" class="option">Quarter<br>
+    <input type="radio" name="size" value="Whole" class="option">Whole (£50)<br>
+    <input type="radio" name="size" value="Half" class="option">Half (£30)<br>
+    <input type="radio" name="size" value="Quarter" class="option">Quarter (£18)<br>
 
     <label>Choose the mode of delivery:</label>
-    <select class="option">
+    <select class="option" name="delivery" required>
       <option value="">Select Delivery Method</option>
       <option>Same day (after 3 hours of the order)</option>
       <option>Next day delivery</option>
       <option>Schedule later</option>
     </select>
-
-    <label>Enter your total amount (£):</label>
-    <input type="number" id="totalAmount" placeholder="e.g. 120" min="0" disabled>
 
     <p id="finalPrice"></p>
 
@@ -201,71 +198,88 @@
     const images = ["chickenPlate.jpg", "chickenRoast.jpg"];
     let index = 0;
     const sliderImage = document.getElementById("sliderImage");
-
     setInterval(() => {
       index = (index + 1) % images.length;
       sliderImage.src = images[index];
     }, 3000);
 
-    // Enable total amount input when options are selected
-    const options = document.querySelectorAll('.option');
-    const totalInput = document.getElementById('totalAmount');
+    const tastePrices = {
+      "Halal": 0,
+      "Spicy": 1.5,
+      "With Salad": 1
+    };
+
+    const sizePrices = {
+      "Whole": 50,
+      "Half": 30,
+      "Quarter": 18
+    };
+
     const finalPriceEl = document.getElementById('finalPrice');
-    const orderSummaryEl = document.getElementById('orderSummary');
+    const form = document.getElementById('orderForm');
     const summaryName = document.getElementById('summaryName');
     const summaryTaste = document.getElementById('summaryTaste');
     const summarySize = document.getElementById('summarySize');
     const summaryDelivery = document.getElementById('summaryDelivery');
     const summaryPrice = document.getElementById('summaryPrice');
+    const orderSummaryEl = document.getElementById('orderSummary');
 
-    options.forEach(option => {
-      option.addEventListener('change', () => {
-        if (document.querySelector('input[name="taste"]:checked') || document.querySelector('input[name="size"]:checked') || document.querySelector('select option:checked')) {
-          totalInput.disabled = false;
-        } else {
-          totalInput.disabled = true;
-          finalPriceEl.textContent = '';
-        }
+    function calculateTotal() {
+      let total = 0;
+
+      const selectedSize = document.querySelector('input[name="size"]:checked');
+      if (selectedSize) {
+        total += sizePrices[selectedSize.value];
+      }
+
+      const selectedTastes = [...document.querySelectorAll('input[name="taste"]:checked')];
+      selectedTastes.forEach(taste => {
+        total += tastePrices[taste.value] || 0;
       });
-    });
 
-    // Live discount calculation
-    totalInput.addEventListener('input', () => {
-      const total = parseFloat(totalInput.value);
+      return total;
+    }
 
-      if (isNaN(total) || total <= 0) {
-        finalPriceEl.textContent = "";
-        return;
-      }
-
-      if (total > 100) {
-        const discounted = total * 0.85;
-        finalPriceEl.textContent = `🎉 You get a 15% discount! Final price: £${discounted.toFixed(2)}`;
+    function updateFinalPriceDisplay() {
+      const total = calculateTotal();
+      if (total > 0) {
+        if (total > 50) {
+          const discounted = total * 0.85;
+          finalPriceEl.textContent = `🎉 You get a 15% discount! Final price: £${discounted.toFixed(2)}`;
+        } else {
+          finalPriceEl.textContent = `Total price: £${total.toFixed(2)} (Spend more than £50 to get 15% off!)`;
+        }
       } else {
-        finalPriceEl.textContent = `Total is less than £100. No discount applied. Final price: £${total.toFixed(2)}`;
+        finalPriceEl.textContent = "";
       }
+    }
+
+    document.querySelectorAll('.option').forEach(input => {
+      input.addEventListener('change', updateFinalPriceDisplay);
     });
 
-    // Display the order summary
-    document.querySelector('form').addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const name = document.querySelector('input[name="name"]').value;
-      const tastes = [...document.querySelectorAll('input[name="taste"]:checked')].map(input => input.value).join(', ');
-      const size = document.querySelector('input[name="size"]:checked') ? document.querySelector('input[name="size"]:checked').value : 'Not selected';
-      const delivery = document.querySelector('select').value;
-      const total = parseFloat(totalInput.value);
-      const finalPrice = total > 100 ? (total * 0.85).toFixed(2) : total.toFixed(2);
+      const name = form.name.value;
+      const selectedTastes = [...form.querySelectorAll('input[name="taste"]:checked')].map(el => el.value);
+      const selectedSizeEl = form.querySelector('input[name="size"]:checked');
+      const selectedSize = selectedSizeEl ? selectedSizeEl.value : 'Not selected';
+      const deliveryMethod = form.delivery.value;
+
+      const total = calculateTotal();
+      const finalPrice = total > 50 ? (total * 0.85).toFixed(2) : total.toFixed(2);
 
       summaryName.textContent = name;
-      summaryTaste.textContent = tastes || 'Not selected';
-      summarySize.textContent = size;
-      summaryDelivery.textContent = delivery;
+      summaryTaste.textContent = selectedTastes.length ? selectedTastes.join(', ') : 'Not selected';
+      summarySize.textContent = selectedSize;
+      summaryDelivery.textContent = deliveryMethod;
       summaryPrice.textContent = finalPrice;
 
-      orderSummaryEl.style.display = 'block';  // Show the order summary
+      orderSummaryEl.style.display = 'block';
     });
   </script>
 
 </body>
 </html>
+
