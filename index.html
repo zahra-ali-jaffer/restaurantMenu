@@ -36,27 +36,33 @@
       margin: 20px auto;
     }
 
-    .slider img {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
+.slider img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 4px solid #003366; /* Dark blue border */
+}
+
 
     .media-row {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      align-items: center;
       gap: 40px;
       margin: 30px 0;
     }
 
-    .media-row img, .media-row video {
-      max-width: 100%;
-      border-radius: 10px;
-    }
+.media-row img,
+.media-row video {
+  flex: 1 1 45%;
+  max-width: 45%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 4px solid #003366; /* Dark blue border */
+}
 
     form {
       width: 80%;
@@ -134,6 +140,27 @@
       font-size: 16px;
       margin: 5px 0;
     }
+
+.media-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 30px auto;
+  width: 90%;
+  max-width: 1200px;
+}
+
+.media-row img,
+.media-row video {
+  flex: 1 1 45%;
+  max-width: 45%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+
   </style>
 </head>
 <body>
@@ -148,12 +175,13 @@
     <img id="sliderImage" src="chickenPlate.jpg" alt="Delicious Chicken">
   </div>
 
-  <div class="media-row">
-    <img src="Money_Quest.jpg" alt="Money Quest Meme" width="400" height="344">
-    <video controls width="400">
-      <source src="mickeyMouse.mp4" type="video/mp4">
-    </video>
-  </div>
+<div class="media-row">
+  <img src="Money_Quest.jpg" alt="Money Quest Meme">
+  <video autoplay loop muted>
+    <source src="mickeyMouse.mp4" type="video/mp4">
+  </video>
+</div>
+
 
   <form id="orderForm">
     <label>Enter your Name:</label>
@@ -172,9 +200,8 @@
     <label>Choose the mode of delivery:</label>
     <select class="option" name="delivery" required>
       <option value="">Select Delivery Method</option>
-      <option>Same day (after 3 hours of the order)</option>
-      <option>Next day delivery</option>
-      <option>Schedule later</option>
+      <option value="same">Same day (after 3 hours) [+£5]</option>
+      <option value="next">Next day delivery [+£3]</option>
     </select>
 
     <p id="finalPrice"></p>
@@ -184,15 +211,22 @@
 
   <div class="made-by">Made by Zahra</div>
 
-  <!-- Order Summary Section -->
-  <div class="order-summary" id="orderSummary" style="display:none;">
-    <h3>Order Summary</h3>
-    <p><strong>Name:</strong> <span id="summaryName"></span></p>
-    <p><strong>Taste Preferences:</strong> <span id="summaryTaste"></span></p>
-    <p><strong>Size:</strong> <span id="summarySize"></span></p>
-    <p><strong>Delivery Method:</strong> <span id="summaryDelivery"></span></p>
-    <p><strong>Total Price:</strong> £<span id="summaryPrice"></span></p>
-  </div>
+<div class="order-summary" id="orderSummary" style="display:none;">
+  <h3>Order Summary</h3>
+  <p><strong>Name:</strong> <span id="summaryName"></span></p>
+  <p><strong>Taste Preferences:</strong> <span id="summaryTaste"></span></p>
+  <p><strong>Size:</strong> <span id="summarySize"></span></p>
+  <p><strong>Delivery Method:</strong> <span id="summaryDelivery"></span></p>
+  <hr>
+  <p><strong>Price Breakdown:</strong></p>
+  <p>Size Price: £<span id="priceSize"></span></p>
+  <p>Taste Extras: £<span id="priceTaste"></span></p>
+  <p>Delivery Fee: £<span id="priceDelivery"></span></p>
+  <p>Discount: -£<span id="priceDiscount"></span></p>
+  <hr>
+  <p><strong>Total Price:</strong> £<span id="summaryPrice"></span></p>
+</div>
+
 
   <script>
     const images = ["chickenPlate.jpg", "chickenRoast.jpg"];
@@ -213,6 +247,11 @@
       "Whole": 50,
       "Half": 30,
       "Quarter": 18
+    };
+
+    const deliveryPrices = {
+      "same": 5,
+      "next": 3
     };
 
     const finalPriceEl = document.getElementById('finalPrice');
@@ -237,6 +276,9 @@
         total += tastePrices[taste.value] || 0;
       });
 
+      const delivery = form.delivery.value;
+      total += deliveryPrices[delivery] || 0;
+
       return total;
     }
 
@@ -258,26 +300,39 @@
       input.addEventListener('change', updateFinalPriceDisplay);
     });
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-      const name = form.name.value;
-      const selectedTastes = [...form.querySelectorAll('input[name="taste"]:checked')].map(el => el.value);
-      const selectedSizeEl = form.querySelector('input[name="size"]:checked');
-      const selectedSize = selectedSizeEl ? selectedSizeEl.value : 'Not selected';
-      const deliveryMethod = form.delivery.value;
+  const name = form.name.value;
+  const selectedTastes = [...form.querySelectorAll('input[name="taste"]:checked')].map(el => el.value);
+  const selectedSizeEl = form.querySelector('input[name="size"]:checked');
+  const selectedSize = selectedSizeEl ? selectedSizeEl.value : 'Not selected';
+  const deliveryMethodText = form.delivery.options[form.delivery.selectedIndex].text;
+  const deliveryValue = form.delivery.value;
 
-      const total = calculateTotal();
-      const finalPrice = total > 50 ? (total * 0.85).toFixed(2) : total.toFixed(2);
+  let sizePrice = selectedSizeEl ? sizePrices[selectedSize] : 0;
+  let tastePrice = selectedTastes.reduce((sum, taste) => sum + (tastePrices[taste] || 0), 0);
+  let deliveryPrice = deliveryPrices[deliveryValue] || 0;
 
-      summaryName.textContent = name;
-      summaryTaste.textContent = selectedTastes.length ? selectedTastes.join(', ') : 'Not selected';
-      summarySize.textContent = selectedSize;
-      summaryDelivery.textContent = deliveryMethod;
-      summaryPrice.textContent = finalPrice;
+  let subtotal = sizePrice + tastePrice + deliveryPrice;
+  let discount = subtotal > 50 ? subtotal * 0.15 : 0;
+  let finalPrice = (subtotal - discount).toFixed(2);
 
-      orderSummaryEl.style.display = 'block';
-    });
+  summaryName.textContent = name;
+  summaryTaste.textContent = selectedTastes.length ? selectedTastes.join(', ') : 'Not selected';
+  summarySize.textContent = selectedSize;
+  summaryDelivery.textContent = deliveryMethodText;
+  summaryPrice.textContent = finalPrice;
+
+  // Fill price breakdown
+  document.getElementById('priceSize').textContent = sizePrice.toFixed(2);
+  document.getElementById('priceTaste').textContent = tastePrice.toFixed(2);
+  document.getElementById('priceDelivery').textContent = deliveryPrice.toFixed(2);
+  document.getElementById('priceDiscount').textContent = discount.toFixed(2);
+
+  orderSummaryEl.style.display = 'block';
+});
+
   </script>
 
 </body>
